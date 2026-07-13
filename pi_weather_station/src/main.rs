@@ -15,6 +15,7 @@
 
 use defmt::*;
 use defmt_rtt as _;
+use ed_utl::Information;
 use embedded_hal::delay::DelayNs;
 use embedded_hal::digital::OutputPin;
 #[cfg(target_arch = "riscv32")]
@@ -61,6 +62,12 @@ const XTAL_FREQ_HZ: u32 = 12_000_000u32;
 ///
 /// The function configures the rp2040 and rp235x peripherals, then toggles a GPIO pin in
 /// an infinite loop. If there is an LED connected to that pin, it will blink.
+use screen;
+
+use information_collector;
+
+use ed_utl;
+
 #[entry]
 fn main() -> ! {
     info!("Program start");
