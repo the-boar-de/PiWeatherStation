@@ -32,14 +32,6 @@ use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
 
-// use bsp::entry;
-// use bsp::hal;
-// use rp_pico as bsp;
-
-/// The linker will place this boot block at the start of our program image. We
-/// need this to help the ROM bootloader get our code up and running.
-/// Note: This boot block is not necessary when using a rp-hal based BSP
-/// as the BSPs already perform this step.
 #[unsafe(link_section = ".boot2")]
 #[used]
 #[cfg(rp2040)]
@@ -51,26 +43,38 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 #[cfg(rp2350)]
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
+/// The linker will place this boot block at the start of our program image. We
+/// need this to help the ROM bootloader get our code up and running.
+/// Note: This boot block is not necessary when using a rp-hal based BSP
+/// as the BSPs already perform this step.
+
 /// External high-speed crystal on the Raspberry Pi Pico 2 board is 12 MHz.
 /// Adjust if your board has a different frequency
 const XTAL_FREQ_HZ: u32 = 12_000_000u32;
+//==============================================================================================
+//custom use
+use data_collector::data_collector::DataCollector;
+use display::screen::Screen;
 
-/// Entry point to our bare-metal application.
-///
-/// The `#[hal::entry]` macro ensures the Cortex-M start-up code calls this function
-/// as soon as all global variables and the spinlock are initialised.
-///
-/// The function configures the rp2040 and rp235x peripherals, then toggles a GPIO pin in
-/// an infinite loop. If there is an LED connected to that pin, it will blink.
-use screen;
-
-use information_collector;
-
+use WifiSetting;
 use ed_utl;
+//==============================================================================================
 
 #[entry]
 fn main() -> ! {
     info!("Program start");
+    //Program start up run
+    // runs only once
+
+    // Setup
+    // Manual set up
+    // Wifi Setting needs to be adjusted
+    let wifi_setting = WifiSetting {
+        WifiName: "",
+        Password: "",
+        MACAdress: "",
+    };
+
     // Grab our singleton objects
     let mut pac = hal::pac::Peripherals::take().unwrap();
 
@@ -108,7 +112,12 @@ fn main() -> ! {
 
     // Configure GPIO25 as an output
     let mut led_pin = pins.gpio25.into_push_pull_output();
+
+    //==============================================================================================
+    // Program Loop
     loop {
+        info!("Loop is Starting");
+
         info!("on!");
         led_pin.set_high().unwrap();
         timer.delay_ms(200);
