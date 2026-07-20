@@ -53,7 +53,7 @@ pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 const XTAL_FREQ_HZ: u32 = 12_000_000u32;
 //==============================================================================================
 //custom use
-use data_collector::data_collector::DataCollector;
+use DataCollectpr::data_collector::DataCollector;
 use display::screen::Screen;
 
 use WifiSetting;
